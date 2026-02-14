@@ -4,12 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "build:pages": "npx --yes @opennextjs/cloudflare@latest build",
+    "build": "npx --yes @opennextjs/cloudflare@latest build",
     "start": "next start",
     "lint": "eslint",
-    "preview": "npm run build:pages && npx --yes wrangler@latest dev",
-    "deploy": "npm run build:pages && npx --yes wrangler@latest deploy"
+    "preview": "npm run build && npx --yes wrangler@latest dev",
+    "deploy": "npm run build && npx --yes wrangler@latest deploy"
   },
   "dependencies": {
     "@portabletext/react": "^6.0.2",
