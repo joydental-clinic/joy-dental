@@ -44,7 +44,7 @@ export default function AdminClient({
         return;
       }
 
-      router.refresh();
+      window.location.href = "https://yonseijoy-dental-clinic.sanity.studio/";
     } catch {
       setError("서버 오류가 발생했습니다");
     } finally {
