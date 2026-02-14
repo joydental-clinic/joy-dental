@@ -32,3 +32,21 @@ export const postBySlugQuery = `*[_type == "post" && slug.current == $slug][0]{
 export const postSlugsQuery = `*[_type == "post" && defined(slug.current)]{
   "slug": slug.current
 }`;
+
+// 공지사항 쿼리
+export const noticesQuery = `*[_type == "notice"] | order(pinned desc, date desc){
+  _id, title, slug, date, category, pinned,
+  "excerpt": pt::text(body)
+}`;
+
+export const recentNoticesQuery = `*[_type == "notice"] | order(pinned desc, date desc)[0...5]{
+  _id, title, slug, date, category, pinned
+}`;
+
+export const noticeBySlugQuery = `*[_type == "notice" && slug.current == $slug][0]{
+  _id, title, slug, date, category, pinned, body
+}`;
+
+export const noticeSlugsQuery = `*[_type == "notice" && defined(slug.current)]{
+  "slug": slug.current
+}`;

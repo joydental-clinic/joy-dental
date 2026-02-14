@@ -35,6 +35,7 @@ export default function Header({ phone1 }: HeaderProps) {
     { href: "/#treatments", label: "진료분야" },
     { href: "/#hours", label: "진료안내" },
     { href: "/#map", label: "오시는 길" },
+    { href: "/notice", label: "공지사항" },
     { href: "/columns", label: "칼럼" },
   ];
 
