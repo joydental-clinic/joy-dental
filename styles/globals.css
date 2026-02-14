@@ -900,8 +900,8 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   .specialty-hero h1 { font-size: 2rem; }
   .specialty-intro-grid { grid-template-columns: 1fr; }
   .footer-content { flex-direction: column; }
-  .hero-buttons { flex-direction: column; align-items: center; }
-  .hero-buttons .btn { width: 100%; max-width: 280px; justify-content: center; }
+  .hero-buttons { flex-direction: row; justify-content: center; gap: 10px; }
+  .hero-buttons .btn { padding: 10px 20px; font-size: 0.85rem; }
   .post-header h1 { font-size: 1.5rem; }
   .post-content { font-size: 1rem; }
   .columns-page { padding-top: 80px; }
