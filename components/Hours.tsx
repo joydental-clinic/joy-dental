@@ -14,7 +14,7 @@ interface HoursProps {
 
 export default function Hours({ schedule, phone1, phone2, email }: HoursProps) {
   return (
-    <section className="section" id="hours">
+    <section className="section hours-section" id="hours">
       <div className="container">
         <h2 className="section-title fade-in">진료 안내</h2>
         <p className="section-subtitle fade-in">편리한 시간에 방문하세요</p>

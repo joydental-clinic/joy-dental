@@ -342,7 +342,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 /* ===== Treatments ===== */
-.treatments { background: #fff; padding-top: 0; }
+.treatments { background: #fff; padding-top: 0; padding-bottom: 20px; }
 .treatments-strip {
   display: grid; grid-template-columns: repeat(3, 1fr);
   border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
@@ -367,6 +367,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 /* ===== Hours ===== */
+.hours-section { padding-top: 40px; }
 .hours-wrapper {
   display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
   align-items: start; max-width: 900px; margin: 0 auto;
