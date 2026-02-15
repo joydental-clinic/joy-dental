@@ -56,6 +56,6 @@ export const noticeSlugsQuery = `*[_type == "notice" && defined(slug.current)]{
   "slug": slug.current
 }`;
 
-export const pinnedNoticeQuery = `*[_type == "notice" && pinned == true] | order(date desc)[0] {
+export const pinnedNoticeQuery = `*[_type == "notice" && pinned == true] | order(date desc) {
   _id, title, slug, category
 }`;

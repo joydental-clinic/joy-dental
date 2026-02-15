@@ -30,7 +30,7 @@ export default async function RootLayout({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [settings, pinnedNotice] = await Promise.all([
     safeFetch<any>(siteSettingsQuery),
-    safeFetch<any>(pinnedNoticeQuery),
+    safeFetch<any[]>(pinnedNoticeQuery),
   ]);
   const phone1 = settings?.phone1 || "031-553-7528";
   const phone2 = settings?.phone2 || "031-553-7529";
@@ -39,7 +39,7 @@ export default async function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <AnnouncementBar notice={pinnedNotice} />
+        <AnnouncementBar notices={pinnedNotice ?? []} />
         <Header phone1={phone1} />
         {children}
         <Footer address={address} phone1={phone1} phone2={phone2} />

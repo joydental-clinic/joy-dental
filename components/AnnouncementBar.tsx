@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 
 interface Notice {
@@ -16,44 +16,77 @@ const categoryLabels: Record<string, string> = {
   general: "공지",
 };
 
-export default function AnnouncementBar({ notice }: { notice: Notice | null }) {
+export default function AnnouncementBar({ notices }: { notices: Notice[] }) {
   const [dismissed, setDismissed] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    if (!notice) return;
-    const key = `announcement-dismissed-${notice._id}`;
+    if (!notices.length) return;
+    const allIds = notices.map((n) => n._id).join(",");
+    const key = `announcement-dismissed-${allIds}`;
     if (sessionStorage.getItem(key)) return;
     setDismissed(false);
     document.body.classList.add("has-announcement-bar");
     return () => {
       document.body.classList.remove("has-announcement-bar");
     };
-  }, [notice]);
+  }, [notices]);
 
-  if (!notice || dismissed) return null;
+  useEffect(() => {
+    if (dismissed || notices.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % notices.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [dismissed, notices.length]);
 
-  const handleDismiss = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    sessionStorage.setItem(`announcement-dismissed-${notice._id}`, "1");
-    setDismissed(true);
-    document.body.classList.remove("has-announcement-bar");
-  };
+  const handleDismiss = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const allIds = notices.map((n) => n._id).join(",");
+      sessionStorage.setItem(`announcement-dismissed-${allIds}`, "1");
+      setDismissed(true);
+      document.body.classList.remove("has-announcement-bar");
+    },
+    [notices]
+  );
 
-  const label = notice.category ? categoryLabels[notice.category] || notice.category : null;
+  if (!notices.length || dismissed) return null;
 
   return (
     <div className="announcement-bar">
-      <Link href={`/notice/${notice.slug.current}`} className="announcement-bar-link">
-        {label && <span className="announcement-bar-category">{label}</span>}
-        <span className="announcement-bar-title">{notice.title}</span>
-      </Link>
+      {notices.map((notice, i) => {
+        const label = notice.category
+          ? categoryLabels[notice.category] || notice.category
+          : null;
+        return (
+          <Link
+            key={notice._id}
+            href={`/notice/${notice.slug.current}`}
+            className={`announcement-bar-slide${i === currentIndex ? " active" : ""}`}
+          >
+            {label && (
+              <span className="announcement-bar-category">{label}</span>
+            )}
+            <span className="announcement-bar-title">{notice.title}</span>
+          </Link>
+        );
+      })}
       <button
         className="announcement-bar-close"
         onClick={handleDismiss}
         aria-label="공지 닫기"
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+        >
           <line x1="18" y1="6" x2="6" y2="18" />
           <line x1="6" y1="6" x2="18" y2="18" />
         </svg>
