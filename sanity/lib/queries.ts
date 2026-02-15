@@ -55,3 +55,7 @@ export const noticeBySlugQuery = `*[_type == "notice" && slug.current == $slug][
 export const noticeSlugsQuery = `*[_type == "notice" && defined(slug.current)]{
   "slug": slug.current
 }`;
+
+export const pinnedNoticeQuery = `*[_type == "notice" && pinned == true] | order(date desc)[0] {
+  _id, title, slug, category
+}`;

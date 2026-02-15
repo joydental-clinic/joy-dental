@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
 import { safeFetch } from "@/sanity/client";
-import { siteSettingsQuery } from "@/sanity/lib/queries";
+import { siteSettingsQuery, pinnedNoticeQuery } from "@/sanity/lib/queries";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AnnouncementBar from "@/components/AnnouncementBar";
 import ScrollAnimations from "@/components/ScrollAnimations";
 import ScrollToTop from "@/components/ScrollToTop";
 
@@ -27,7 +28,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const settings = await safeFetch<any>(siteSettingsQuery);
+  const [settings, pinnedNotice] = await Promise.all([
+    safeFetch<any>(siteSettingsQuery),
+    safeFetch<any>(pinnedNoticeQuery),
+  ]);
   const phone1 = settings?.phone1 || "031-553-7528";
   const phone2 = settings?.phone2 || "031-553-7529";
   const address = settings?.address || "경기 남양주시 도농로32 부영중앙상가 6층";
@@ -35,6 +39,7 @@ export default async function RootLayout({
   return (
     <html lang="ko">
       <body>
+        <AnnouncementBar notice={pinnedNotice} />
         <Header phone1={phone1} />
         {children}
         <Footer address={address} phone1={phone1} phone2={phone2} />
