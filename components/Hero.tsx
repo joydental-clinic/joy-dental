@@ -63,7 +63,7 @@ export default function Hero({ slides, phone1 }: HeroProps) {
         <p className="fade-in">
           합리적인 가격과 최상의 의료진이 함께하는
           <br />
-          남양주 다산의 믿을 수 있는 치과
+          당신의 믿을 수 있는 치과
         </p>
         <div className="hero-buttons fade-in">
           <a href={`tel:${phone1}`} className="btn btn-white">
