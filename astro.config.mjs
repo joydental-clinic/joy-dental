@@ -8,7 +8,7 @@ const env = loadEnv(process.env.NODE_ENV ?? "development", process.cwd(), "");
 
 export default defineConfig({
   output: "server",
-  adapter: cloudflare(),
+  adapter: cloudflare({ imageService: "compile" }),
   integrations: [
     sanity({
       projectId: env.PUBLIC_SANITY_PROJECT_ID,
