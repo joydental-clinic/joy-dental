@@ -36,8 +36,9 @@ function tagLabel(tag: string) {
           <div class="doctor-photo-v2">
             {doc.image ? (
               <img
-                src={urlFor(doc.image).width(800).height(960).url()}
+                src={urlFor(doc.image).width(800).height(960).quality(85).auto("format").url()}
                 alt={doc.name}
+                loading="lazy"
               />
             ) : (
               <div class="doctor-photo-v2-placeholder">

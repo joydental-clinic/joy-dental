@@ -1,6 +1,6 @@
 ---
 import { PortableText } from "astro-portabletext";
-import { urlFor } from "@/utils/sanity";
+import ImageBlock from "./ImageBlock.astro";
 
 interface Props {
   value: any;
@@ -10,12 +10,7 @@ const { value } = Astro.props;
 
 const components = {
   type: {
-    image: (node: any) => {
-      if (!node?.value?.asset) return "";
-      const src = urlFor(node.value).width(800).quality(85).url();
-      const alt = node.value.alt || "";
-      return `<img src="${src}" alt="${alt}" loading="lazy" />`;
-    },
+    image: ImageBlock,
   },
 };
 ---

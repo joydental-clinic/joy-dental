@@ -56,14 +56,14 @@ function formatDate(dateStr: string) {
       {posts.map((post) => {
         const thumbSource = post.thumbnail || post.firstImage;
         const thumbUrl = thumbSource
-          ? urlFor(thumbSource).width(400).height(240).fit("crop").url()
+          ? urlFor(thumbSource).width(400).height(240).fit("crop").quality(85).auto("format").url()
           : null;
 
         return (
           <a href={`/columns/${post.slug.current}`} class="blog-card fade-in">
             <div class="blog-thumb">
               {thumbUrl ? (
-                <img src={thumbUrl} alt={post.title} class="blog-thumb-img" />
+                <img src={thumbUrl} alt={post.title} class="blog-thumb-img" loading="lazy" />
               ) : (
                 <div class="blog-thumb-bg" style={`background: ${getCategoryGradient(post.category)}`}>
                   {getCategoryEmoji(post.category)}

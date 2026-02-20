@@ -31,7 +31,14 @@ export const postsByCategoryQuery = `*[_type == "post" && category == $category]
 }`;
 
 export const postBySlugQuery = `*[_type == "post" && slug.current == $slug][0]{
-  _id, title, slug, date, category, author, thumbnail, body
+  _id, title, slug, date, category, author, thumbnail,
+  body[]{
+    ...,
+    _type == "image" => {
+      ...,
+      asset->
+    }
+  }
 }`;
 
 export const postSlugsQuery = `*[_type == "post" && defined(slug.current)]{
@@ -49,7 +56,14 @@ export const recentNoticesQuery = `*[_type == "notice"] | order(pinned desc, dat
 }`;
 
 export const noticeBySlugQuery = `*[_type == "notice" && slug.current == $slug][0]{
-  _id, title, slug, date, category, pinned, body
+  _id, title, slug, date, category, pinned,
+  body[]{
+    ...,
+    _type == "image" => {
+      ...,
+      asset->
+    }
+  }
 }`;
 
 export const noticeSlugsQuery = `*[_type == "notice" && defined(slug.current)]{

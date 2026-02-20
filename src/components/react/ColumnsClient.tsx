@@ -65,7 +65,7 @@ export default function ColumnsClient({ posts }: { posts: Post[] }) {
         <div className="blog-grid">
           {filtered.map((post) => {
             const thumbUrl = post.thumbnail
-              ? urlFor(post.thumbnail).width(400).height(240).fit("crop").url()
+              ? urlFor(post.thumbnail).width(400).height(240).fit("crop").quality(85).auto("format").url()
               : null;
 
             return (
@@ -76,7 +76,7 @@ export default function ColumnsClient({ posts }: { posts: Post[] }) {
               >
                 <div className="blog-thumb">
                   {thumbUrl ? (
-                    <img src={thumbUrl} alt={post.title} className="blog-thumb-img" />
+                    <img src={thumbUrl} alt={post.title} className="blog-thumb-img" loading="lazy" />
                   ) : (
                     <div
                       className="blog-thumb-bg"
