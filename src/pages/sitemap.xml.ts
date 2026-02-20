@@ -1,5 +1,7 @@
 import type { APIRoute } from "astro";
 import { safeFetch } from "@/utils/sanity";
+
+export const prerender = true;
 import { postSlugsQuery, noticeSlugsQuery } from "@/utils/queries";
 
 export const GET: APIRoute = async () => {

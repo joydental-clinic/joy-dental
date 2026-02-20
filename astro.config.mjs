@@ -1,12 +1,14 @@
 import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 import sanity from "@sanity/astro";
+import cloudflare from "@astrojs/cloudflare";
 import { loadEnv } from "vite";
 
 const env = loadEnv(process.env.NODE_ENV ?? "development", process.cwd(), "");
 
 export default defineConfig({
-  output: "static",
+  output: "server",
+  adapter: cloudflare(),
   integrations: [
     sanity({
       projectId: env.PUBLIC_SANITY_PROJECT_ID,

@@ -1,5 +1,7 @@
 import type { APIRoute } from "astro";
 
+export const prerender = true;
+
 export const GET: APIRoute = () => {
   const baseUrl = import.meta.env.SITE_URL || "https://www.yonseijoy.com";
 

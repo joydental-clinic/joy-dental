@@ -2,12 +2,7 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import PortableTextRenderer from "@/components/astro/PortableTextRenderer.astro";
 import { safeFetch } from "@/utils/sanity";
-import { noticeBySlugQuery, noticeSlugsQuery } from "@/utils/queries";
-
-export async function getStaticPaths() {
-  const slugs = await safeFetch<{ slug: string }[]>(noticeSlugsQuery);
-  return (slugs || []).map((s) => ({ params: { slug: s.slug } }));
-}
+import { noticeBySlugQuery } from "@/utils/queries";
 
 const { slug } = Astro.params;
 const notice = await safeFetch<any>(noticeBySlugQuery, { slug: slug! });
