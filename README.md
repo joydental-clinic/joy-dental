@@ -4,9 +4,10 @@
 
 ## 기술 스택
 
-- **프레임워크**: Next.js 16 (App Router)
+- **프레임워크**: Astro (Static Site Generation)
+- **UI**: React islands (선택적 하이드레이션)
 - **CMS**: Sanity
-- **호스팅**: Cloudflare Workers (@opennextjs/cloudflare)
+- **스타일**: 순수 CSS (`src/styles/globals.css`)
 
 ## 개발
 
@@ -14,8 +15,18 @@
 npm run dev
 ```
 
-http://localhost:3000 에서 확인.
+http://localhost:4321 에서 확인.
 
-## 배포
+## 빌드
 
-`main` 브랜치에 push하면 Cloudflare Pages를 통해 자동 배포된다.
+```bash
+npm run build
+```
+
+정적 파일이 `dist/`에 생성된다.
+
+## Sanity 스키마 배포
+
+```bash
+npx sanity@latest schema deploy
+```
