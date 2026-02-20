@@ -6,8 +6,8 @@ export default defineConfig({
   output: "static",
   integrations: [
     sanity({
-      projectId: import.meta.env.PUBLIC_SANITY_PROJECT_ID,
-      dataset: import.meta.env.PUBLIC_SANITY_DATASET,
+      projectId: process.env.PUBLIC_SANITY_PROJECT_ID,
+      dataset: process.env.PUBLIC_SANITY_DATASET,
       useCdn: true,
       apiVersion: "2024-01-01",
     }),
