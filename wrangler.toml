@@ -1,4 +1,4 @@
-name = "ysjoy-dental"
+name = "joy-dental"
 compatibility_date = "2026-02-20"
 compatibility_flags = ["nodejs_compat"]
 main = "./dist/_worker.js/index.js"
