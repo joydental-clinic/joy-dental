@@ -1,0 +1,59 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PortableTextRenderer from "@/components/astro/PortableTextRenderer.astro";
+import { safeFetch } from "@/utils/sanity";
+import { postBySlugQuery, postSlugsQuery } from "@/utils/queries";
+
+export async function getStaticPaths() {
+  const slugs = await safeFetch<{ slug: string }[]>(postSlugsQuery);
+  return (slugs || []).map((s) => ({ params: { slug: s.slug } }));
+}
+
+const { slug } = Astro.params;
+const post = await safeFetch<any>(postBySlugQuery, { slug: slug! });
+
+if (!post) {
+  return Astro.redirect("/columns");
+}
+
+const categoryLabel =
+  post.category === "ortho"
+    ? "교정"
+    : post.category === "implant"
+      ? "임플란트"
+      : "일반";
+---
+
+<BaseLayout title={post.title} description={`연세조이치과 칼럼 - ${post.title}`}>
+  <article class="post-page">
+    <div class="container">
+      <div class="post-header">
+        {post.category && (
+          <span class={`blog-tag ${post.category}`}>{categoryLabel}</span>
+        )}
+        <h1>{post.title}</h1>
+        <div class="post-meta">
+          <time datetime={post.date}>
+            {new Date(post.date).toLocaleDateString("ko-KR", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </time>
+          {post.author && <span>{post.author}</span>}
+        </div>
+      </div>
+      <div class="post-content">
+        {post.body && <PortableTextRenderer value={post.body} />}
+      </div>
+      <div class="post-nav">
+        <a href="/columns" class="btn btn-primary">
+          <svg viewBox="0 0 20 20" fill="currentColor" style="width: 16px; height: 16px;">
+            <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+          </svg>
+          칼럼 목록으로
+        </a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

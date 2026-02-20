@@ -1,0 +1,59 @@
+---
+interface Notice {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  date: string;
+  category: string;
+  pinned: boolean;
+}
+
+interface Props {
+  notices: Notice[];
+}
+
+const { notices } = Astro.props;
+
+function formatDate(dateStr: string) {
+  if (!dateStr) return "";
+  return new Date(dateStr)
+    .toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    })
+    .replace(/\. /g, ".")
+    .replace(/\.$/, "");
+}
+---
+
+{notices.length > 0 && (
+  <section class="section" id="notice">
+    <div class="container">
+      <h2 class="section-title fade-in">공지사항</h2>
+      <p class="section-subtitle fade-in">연세조이치과의 소식과 안내사항</p>
+      <div class="notice-preview-list">
+        {notices.map((notice) => (
+          <a href={`/notice/${notice.slug?.current || ""}`} class="notice-preview-item fade-in">
+            <div class="notice-preview-left">
+              {notice.pinned && <span class="notice-pin">고정</span>}
+              {notice.category && <span class="notice-category">{notice.category}</span>}
+              <span class="notice-preview-title">{notice.title}</span>
+            </div>
+            <time class="notice-preview-date" datetime={notice.date}>
+              {formatDate(notice.date)}
+            </time>
+          </a>
+        ))}
+      </div>
+      <div class="blog-more fade-in">
+        <a href="/notice" class="btn btn-primary">
+          공지사항 더보기
+          <svg viewBox="0 0 20 20" fill="currentColor" style="width: 16px; height: 16px;">
+            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+)}

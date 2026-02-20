@@ -1,33 +1,28 @@
 {
   "name": "ws.ysjoy-dental-clinic",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "npx --yes @opennextjs/cloudflare@latest build",
-    "start": "next start",
-    "lint": "eslint",
-    "preview": "npm run build && npx --yes wrangler@latest dev",
-    "deploy": "npm run build && npx --yes wrangler@latest deploy"
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
   },
   "dependencies": {
-    "@portabletext/react": "^6.0.2",
+    "@astrojs/react": "^4.2.1",
+    "@sanity/astro": "^3.2.3",
     "@sanity/client": "^7.14.1",
     "@sanity/image-url": "^1.2.0",
-    "@sanity/vision": "^5.9.0",
-    "next": "16.1.6",
-    "next-sanity": "^12.1.0",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
-    "sanity": "^5.9.0",
-    "styled-components": "^6.3.9"
+    "astro": "^5.5.5",
+    "astro-portabletext": "^0.11.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-is": "^19.2.4",
+    "sanity": "^3.72.0",
+    "styled-components": "^6.3.11"
   },
   "devDependencies": {
-    "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.1.6",
     "typescript": "^5"
   }
 }

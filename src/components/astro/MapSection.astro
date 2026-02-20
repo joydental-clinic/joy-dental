@@ -1,0 +1,55 @@
+---
+interface Props {
+  address: string;
+}
+
+const { address } = Astro.props;
+---
+
+<section class="section map-section" id="map">
+  <div class="container">
+    <h2 class="section-title fade-in">오시는 길</h2>
+    <p class="section-subtitle fade-in">도농역에서 가까운 곳에 위치해 있습니다</p>
+    <div class="map-wrap fade-in">
+      <a
+        href="https://map.kakao.com/link/map/연세조이치과,37.6118,127.1567"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="/images/map.png"
+          alt="연세조이치과 위치 지도"
+          width="900"
+          height="500"
+          class="map-embed"
+        />
+      </a>
+      <div class="map-info">
+        <div class="map-address">
+          <svg viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+          </svg>
+          <span>{address}</span>
+        </div>
+        <div class="map-links">
+          <a
+            href="https://map.kakao.com/link/to/연세조이치과,37.6118,127.1567"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="map-link"
+          >
+            카카오맵 길찾기
+          </a>
+          <a
+            href="https://map.naver.com/v5/search/연세조이치과"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="map-link"
+          >
+            네이버지도
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

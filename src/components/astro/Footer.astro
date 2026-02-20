@@ -1,0 +1,63 @@
+---
+interface Props {
+  address: string;
+  phone1: string;
+  phone2: string;
+}
+
+const { address, phone1, phone2 } = Astro.props;
+const phone2Last = phone2.split("-").pop();
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <h3>연세조이치과의원</h3>
+        <p>
+          {address}<br />
+          대표: 이승범 외 1인<br />
+          사업자등록번호: 132-91-67553<br />
+          TEL: {phone1} / {phone2Last}
+        </p>
+      </div>
+      <div class="footer-links">
+        <h4>진료 분야</h4>
+        <a href="/#treatments" data-hash="treatments">임플란트</a>
+        <a href="/#treatments" data-hash="treatments">치아교정</a>
+        <a href="/#treatments" data-hash="treatments">무통 스케일링</a>
+        <a href="/#treatments" data-hash="treatments">치아미백</a>
+        <a href="/#treatments" data-hash="treatments">일반 치과</a>
+      </div>
+      <div class="footer-links">
+        <h4>바로가기</h4>
+        <a href="/#about" data-hash="about">병원소개</a>
+        <a href="/#doctors" data-hash="doctors">의료진 소개</a>
+        <a href="/#hours" data-hash="hours">진료시간</a>
+        <a href="/#map" data-hash="map">오시는 길</a>
+        <a href="/columns">칼럼</a>
+        <a href="https://blog.naver.com/yonseicholee" target="_blank" rel="noopener noreferrer">
+          네이버 블로그
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; {year} 연세조이치과의원. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll<HTMLAnchorElement>(".footer-links a[data-hash]").forEach((a) => {
+    a.addEventListener("click", (e) => {
+      const hash = a.dataset.hash;
+      if (!hash) return;
+      const el = document.getElementById(hash);
+      if (el) {
+        e.preventDefault();
+        el.scrollIntoView({ behavior: "smooth" });
+      }
+    });
+  });
+</script>

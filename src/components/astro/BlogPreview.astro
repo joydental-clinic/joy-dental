@@ -1,0 +1,94 @@
+---
+import { urlFor } from "@/utils/sanity";
+
+interface Post {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  date: string;
+  category: string;
+  excerpt?: string;
+  thumbnail?: { asset: { _ref: string } };
+  firstImage?: { asset: { _ref: string } };
+}
+
+interface Props {
+  posts: Post[];
+}
+
+const { posts } = Astro.props;
+
+function getCategoryLabel(category: string) {
+  if (category === "ortho") return "교정";
+  if (category === "implant") return "임플란트";
+  return "일반";
+}
+
+function getCategoryEmoji(category: string) {
+  if (category === "ortho") return "\u{1F601}";
+  if (category === "implant") return "\u{1F9B7}";
+  return "\u2728";
+}
+
+function getCategoryGradient(category: string) {
+  if (category === "ortho") return "linear-gradient(135deg, #FCE7F3, #FBCFE8)";
+  if (category === "implant") return "linear-gradient(135deg, #DBEAFE, #BFDBFE)";
+  return "linear-gradient(135deg, #D1FAE5, #A7F3D0)";
+}
+
+function formatDate(dateStr: string) {
+  return new Date(dateStr)
+    .toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    })
+    .replace(/\. /g, ".")
+    .replace(/\.$/, "");
+}
+---
+
+<section class="section" id="blog">
+  <div class="container">
+    <h2 class="section-title fade-in">블로그 칼럼</h2>
+    <p class="section-subtitle fade-in">전문의가 직접 쓰는 치과 상식과 치료 사례</p>
+    <div class="blog-grid">
+      {posts.map((post) => {
+        const thumbSource = post.thumbnail || post.firstImage;
+        const thumbUrl = thumbSource
+          ? urlFor(thumbSource).width(400).height(240).fit("crop").url()
+          : null;
+
+        return (
+          <a href={`/columns/${post.slug.current}`} class="blog-card fade-in">
+            <div class="blog-thumb">
+              {thumbUrl ? (
+                <img src={thumbUrl} alt={post.title} class="blog-thumb-img" />
+              ) : (
+                <div class="blog-thumb-bg" style={`background: ${getCategoryGradient(post.category)}`}>
+                  {getCategoryEmoji(post.category)}
+                </div>
+              )}
+            </div>
+            <div class="blog-body">
+              <span class={`blog-tag ${post.category}`}>
+                {getCategoryLabel(post.category)}
+              </span>
+              <h3>{post.title}</h3>
+              <p>{post.excerpt ? post.excerpt.slice(0, 80) : ""}</p>
+              <div class="blog-date">{formatDate(post.date)}</div>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+    <div class="blog-more fade-in">
+      <a href="/columns" class="btn btn-primary">
+        칼럼 더보기
+        <svg viewBox="0 0 20 20" fill="currentColor" style="width: 16px; height: 16px;">
+          <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>

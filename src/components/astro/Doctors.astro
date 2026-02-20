@@ -1,0 +1,67 @@
+---
+import { urlFor } from "@/utils/sanity";
+
+interface Doctor {
+  _id: string;
+  name: string;
+  title: string;
+  tag: string;
+  initial: string;
+  image?: { asset: { _ref: string } };
+  specialties: string[];
+  order: number;
+}
+
+interface Props {
+  doctors: Doctor[];
+}
+
+const { doctors } = Astro.props;
+
+function tagLabel(tag: string) {
+  if (tag === "implant") return "임플란트 전문";
+  if (tag === "ortho") return "교정 전문";
+  return "일반 진료";
+}
+---
+
+<section class="section doctors-section" id="doctors">
+  <div class="container">
+    <span class="doctors-label fade-in">MEDICAL TEAM</span>
+    <h2 class="doctors-heading fade-in">의료진 소개</h2>
+    <p class="doctors-subheading fade-in">각 분야 전문의가 직접 상담하고, 책임지고 치료합니다</p>
+    <div class="doctors-list">
+      {doctors.map((doc, i) => (
+        <div class={`doctor-card-v2 ${i % 2 !== 0 ? "reverse" : ""} fade-in`}>
+          <div class="doctor-photo-v2">
+            {doc.image ? (
+              <img
+                src={urlFor(doc.image).width(800).height(960).url()}
+                alt={doc.name}
+              />
+            ) : (
+              <div class="doctor-photo-v2-placeholder">
+                {doc.initial}
+              </div>
+            )}
+            <div class="doctor-photo-caption">
+              <span class="doctor-photo-caption-name">{doc.name}</span>
+              <span class="doctor-photo-caption-title">{doc.title}</span>
+            </div>
+          </div>
+          <div class="doctor-detail-v2">
+            <span class="doctor-specialty-label">{tagLabel(doc.tag)}</span>
+            <h3 class="doctor-name-v2">{doc.name}</h3>
+            <p class="doctor-title-v2">{doc.title}</p>
+            <div class="doctor-credentials-divider"></div>
+            <ul class="doctor-credentials-v2">
+              {(doc.specialties ?? []).map((spec) => (
+                <li>{spec}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

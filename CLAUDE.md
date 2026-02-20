@@ -4,26 +4,29 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Yonsei Joy Dental Clinic (연세조이치과) website — a Korean dental clinic site built with Next.js (App Router) and Sanity CMS. The site is in Korean. 도메인은 아직 미정.
+Yonsei Joy Dental Clinic (연세조이치과) website — a Korean dental clinic site built with Astro and Sanity CMS. The site is in Korean. Static output (SSG) with React islands for interactive components.
 
 ## Commands
 
-- `npm run dev` — Start development server (Next.js + embedded Sanity Studio)
-- `npm run build` — Production build
-- `npm run lint` — ESLint (flat config, no args needed)
+- `npm run dev` — Start Astro development server
+- `npm run build` — Production build (static output to `dist/`)
+- `npm run preview` — Preview production build locally
 - `npx sanity@latest schema deploy` — Deploy local schema changes to Sanity cloud
 
 ## Architecture
 
-### Next.js App Router + Embedded Sanity Studio
+### Astro (Static Site Generation) + Sanity CMS
 
-The app uses Next.js 16 with the App Router. Sanity Studio is embedded at `/studio` via a catch-all route (`app/studio/[[...tool]]/page.tsx`). The Studio is configured in `sanity.config.ts` (marked `"use client"`).
+The app uses Astro with `output: "static"`. All pages are pre-rendered at build time. Interactive components use React islands with Astro's `client:*` directives for selective hydration.
+
+Sanity Studio is accessed externally (not embedded). Schema files remain in `sanity/schemas/` for CLI deployment.
 
 ### Sanity Configuration
 
-- Project ID and dataset are read from env vars: `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`
-- Client is created in `sanity/client.ts` using `next-sanity`'s `createClient`
-- `safeFetch()` wrapper returns `null` when Sanity is unconfigured (projectId = "placeholder") or on fetch errors — all page components use this and handle null gracefully with fallback values
+- Project ID and dataset are configured via `@sanity/astro` integration in `astro.config.mjs`
+- Env vars use Astro prefix: `PUBLIC_SANITY_PROJECT_ID`, `PUBLIC_SANITY_DATASET`
+- Client uses `sanity:client` virtual import from `@sanity/astro`
+- `safeFetch()` wrapper in `src/utils/sanity.ts` returns `null` on fetch errors
 - `urlFor()` helper generates Sanity image URLs via `@sanity/image-url`
 
 ### Content Model (Sanity Schemas)
@@ -35,29 +38,55 @@ Schemas live in `sanity/schemas/` and are registered in `sanity/schemas/index.ts
 - **doctor** — Staff profiles with specialties, tag (implant/ortho/general), ordering
 - **hours** — Singleton: schedule array with day/time/highlight/closed fields
 - **post** — Blog posts with slug, category (ortho/implant/general), Portable Text body with inline images
+- **notice** — Notices with slug, category, pinned flag, Portable Text body
 
 ### GROQ Queries
 
-All queries are centralized in `sanity/lib/queries.ts`. Pages import and use these named query constants.
+All queries are centralized in `src/utils/queries.ts`. Pages import and use these named query constants.
 
-### Page Structure
+### Directory Structure
 
-- `/` (`app/page.tsx`) — Homepage, server component that fetches all content sections in parallel via `Promise.all`
-- `/columns` (`app/columns/page.tsx`) — Blog listing with client-side category filtering (`ColumnsClient.tsx`)
-- `/columns/[slug]` — Individual post pages using Portable Text rendering (`@portabletext/react`)
-- `/studio` — Embedded Sanity Studio
+```
+src/
+  layouts/BaseLayout.astro       — Main layout with header, footer, scroll animations
+  pages/                         — Astro file-based routing
+    index.astro                  — Homepage
+    columns/index.astro          — Blog listing
+    columns/[slug].astro         — Individual post
+    ortho.astro                  — Orthodontics specialty page
+    implant.astro                — Implant specialty page
+    notice/index.astro           — Notice listing
+    notice/[slug].astro          — Individual notice
+    sitemap.xml.ts               — Dynamic sitemap
+    robots.txt.ts                — Robots.txt
+  components/
+    astro/                       — Zero-JS Astro components (Doctors, Treatments, Hours, etc.)
+    react/                       — React islands (Header, Hero, AnnouncementBar, etc.)
+  utils/
+    sanity.ts                    — Sanity client, urlFor, safeFetch
+    queries.ts                   — GROQ queries
+  styles/globals.css             — All styles
+sanity/
+  schemas/                       — Sanity schema definitions (for CLI deploy)
+```
+
+### Component Strategy
+
+- **Astro components** (`src/components/astro/`): Pure HTML, zero JavaScript shipped. Used for Doctors, Treatments, Hours, MapSection, BlogPreview, NoticePreview, Footer, PortableTextRenderer.
+- **React islands** (`src/components/react/`): Hydrated on client. Used for Header (`client:load`), Hero (`client:load`), AnnouncementBar (`client:load`), CinematicCarousel (`client:visible`), ColumnsClient (`client:load`), ScrollToTop (`client:idle`).
 
 ### Styling
 
-All styles are in a single `styles/globals.css` file. Components use class names defined there. Scroll animations are handled by `components/ScrollAnimations.tsx` (adds `.visible` class to `.fade-in` elements on intersection).
+All styles are in `src/styles/globals.css`. Imported in `BaseLayout.astro`. Scroll animations are handled by an inline `<script>` in `BaseLayout.astro` using IntersectionObserver.
 
 ### Path Aliases
 
-`@/*` maps to project root (configured in `tsconfig.json`).
+`@/*` maps to `./src/*` (configured in `tsconfig.json`).
 
 ## Key Patterns
 
-- Homepage components (Hero, About, Doctors, Treatments, Hours, MapSection, BlogPreview) receive data as props from the server-rendered page
+- Homepage fetches all data in parallel via `Promise.all` in the Astro frontmatter
+- Dynamic routes use `getStaticPaths()` for static generation
 - Post categories use string values: `"ortho"`, `"implant"`, `"general"`
-- Blog post body uses Portable Text (block content + images)
-- `styled-components` is a dependency but the main styling approach is the global CSS file
+- Blog/notice bodies use Portable Text rendered via `astro-portabletext`
+- React components use `<a>` tags instead of framework-specific Link components

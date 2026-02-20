@@ -1,0 +1,54 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { safeFetch } from "@/utils/sanity";
+import { noticesQuery } from "@/utils/queries";
+
+interface Notice {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  date: string;
+  category: string;
+  pinned: boolean;
+  excerpt?: string;
+}
+
+const notices = await safeFetch<Notice[]>(noticesQuery);
+const list = notices || [];
+
+function formatDate(dateStr: string) {
+  if (!dateStr) return "";
+  return new Date(dateStr)
+    .toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" })
+    .replace(/\. /g, ".").replace(/\.$/, "");
+}
+---
+
+<BaseLayout title="공지사항" description="연세조이치과 공지사항 - 진료안내, 휴진안내 등 병원 소식을 전합니다">
+  <div class="notice-page">
+    <div class="container">
+      <h1 class="section-title fade-in">공지사항</h1>
+      <p class="section-subtitle fade-in">
+        연세조이치과의 소식과 안내사항을 확인하세요
+      </p>
+
+      <div class="notice-list">
+        {list.length === 0 && (
+          <p class="notice-empty">등록된 공지사항이 없습니다.</p>
+        )}
+        {list.map((notice) => (
+          <a href={`/notice/${notice.slug?.current || ""}`} class="notice-item fade-in">
+            <div class="notice-item-left">
+              {notice.pinned && <span class="notice-pin">고정</span>}
+              {notice.category && <span class="notice-category">{notice.category}</span>}
+              <span class="notice-item-title">{notice.title}</span>
+            </div>
+            <time class="notice-item-date" datetime={notice.date}>
+              {formatDate(notice.date)}
+            </time>
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</BaseLayout>

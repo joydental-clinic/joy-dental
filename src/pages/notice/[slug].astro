@@ -1,0 +1,53 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PortableTextRenderer from "@/components/astro/PortableTextRenderer.astro";
+import { safeFetch } from "@/utils/sanity";
+import { noticeBySlugQuery, noticeSlugsQuery } from "@/utils/queries";
+
+export async function getStaticPaths() {
+  const slugs = await safeFetch<{ slug: string }[]>(noticeSlugsQuery);
+  return (slugs || []).map((s) => ({ params: { slug: s.slug } }));
+}
+
+const { slug } = Astro.params;
+const notice = await safeFetch<any>(noticeBySlugQuery, { slug: slug! });
+
+if (!notice) {
+  return Astro.redirect("/notice");
+}
+---
+
+<BaseLayout title={notice.title} description={`연세조이치과 공지사항 - ${notice.title}`}>
+  <article class="post-page">
+    <div class="container">
+      <div class="post-header">
+        {notice.category && (
+          <span class="notice-category">{notice.category}</span>
+        )}
+        <h1>{notice.title}</h1>
+        <div class="post-meta">
+          <time datetime={notice.date}>
+            {notice.date
+              ? new Date(notice.date).toLocaleDateString("ko-KR", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })
+              : ""}
+          </time>
+        </div>
+      </div>
+      <div class="post-content">
+        {notice.body && <PortableTextRenderer value={notice.body} />}
+      </div>
+      <div class="post-nav">
+        <a href="/notice" class="btn btn-primary">
+          <svg viewBox="0 0 20 20" fill="currentColor" style="width: 16px; height: 16px;">
+            <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+          </svg>
+          공지사항 목록으로
+        </a>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

@@ -1,0 +1,41 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Hero from "@/components/react/Hero";
+import CinematicCarousel from "@/components/react/CinematicCarousel";
+import Doctors from "@/components/astro/Doctors.astro";
+import Treatments from "@/components/astro/Treatments.astro";
+import Hours from "@/components/astro/Hours.astro";
+import MapSection from "@/components/astro/MapSection.astro";
+import NoticePreview from "@/components/astro/NoticePreview.astro";
+import { safeFetch } from "@/utils/sanity";
+import {
+  siteSettingsQuery,
+  heroSlidesQuery,
+  doctorsQuery,
+  hoursQuery,
+  recentNoticesQuery,
+} from "@/utils/queries";
+
+const [settings, slides, doctors, hours, notices] = await Promise.all([
+  safeFetch<any>(siteSettingsQuery),
+  safeFetch<any[]>(heroSlidesQuery),
+  safeFetch<any[]>(doctorsQuery),
+  safeFetch<any>(hoursQuery),
+  safeFetch<any[]>(recentNoticesQuery),
+]);
+
+const phone1 = settings?.phone1 || "031-553-7528";
+const phone2 = settings?.phone2 || "031-553-7529";
+const email = settings?.email || "yonseicholee@naver.com";
+const address = settings?.address || "경기 남양주시 도농로32 부영중앙상가 6층";
+---
+
+<BaseLayout>
+  <Hero slides={slides || []} phone1={phone1} client:load />
+  <CinematicCarousel client:visible />
+  <Doctors doctors={doctors || []} />
+  <Treatments />
+  <Hours schedule={hours?.schedule || []} phone1={phone1} phone2={phone2} email={email} />
+  <MapSection address={address} />
+  <NoticePreview notices={notices || []} />
+</BaseLayout>
